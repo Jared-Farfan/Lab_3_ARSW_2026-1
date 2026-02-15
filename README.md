@@ -55,9 +55,19 @@ src/main/java/edu/eci/arsw/blueprints
 - Analiza la capa `services` (`BlueprintsServices`) y el controlador `BlueprintsAPIController`.
 
 ### 2. Migración a persistencia en PostgreSQL
-- Configura una base de datos PostgreSQL (puedes usar Docker).  
+- Configura una base de datos PostgreSQL (puedes usar Docker).
+
+Configuramos un docker-conpose para levantar una base de datos postgresql con el comando `docker-compose up -d`.
+
+![alt text](img/dockerDB.png)
+
 - Implementa un nuevo repositorio `PostgresBlueprintPersistence` que reemplace la versión en memoria.  
+
+Se crearon las clases JpaBlueprintRepository y PostgresBlueprintPersistence para la presistencia con postgresql.
+
 - Mantén el contrato de la interfaz `BlueprintPersistence`.  
+
+la clase PostgresBlueprintPersistence implemmenta la inertfaz.
 
 ### 3. Buenas prácticas de API REST
 - Cambia el path base de los controladores a `/api/v1/blueprints`.  

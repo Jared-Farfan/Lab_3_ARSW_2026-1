@@ -2,13 +2,16 @@ package edu.eci.arsw.blueprints.persistence;
 
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
-import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-@Repository
+/**
+ * In-memory implementation of BlueprintPersistence.
+ * Not active by default - use PostgresBlueprintPersistence instead.
+ * To use this implementation, annotate it with @Repository and remove @Primary from PostgresBlueprintPersistence.
+ */
 public class InMemoryBlueprintPersistence implements BlueprintPersistence {
 
     private final Map<String, Blueprint> blueprints = new ConcurrentHashMap<>();
