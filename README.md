@@ -71,12 +71,18 @@ la clase PostgresBlueprintPersistence implemmenta la inertfaz.
 
 ### 3. Buenas prácticas de API REST
 - Cambia el path base de los controladores a `/api/v1/blueprints`.  
+
+![alt text](<img/path base.png>)
+
 - Usa **códigos HTTP** correctos:  
   - `200 OK` (consultas exitosas).  
   - `201 Created` (creación).  
   - `202 Accepted` (actualizaciones).  
   - `400 Bad Request` (datos inválidos).  
   - `404 Not Found` (recurso inexistente).  
+
+El controlador ya usa la mayoría de los códigos correctos, pero se cambio el FORBIDEN a 400 (BAD_REQUEST).
+
 - Implementa una clase genérica de respuesta uniforme:
   ```java
   public record ApiResponse<T>(int code, String message, T data) {}
@@ -89,6 +95,10 @@ la clase PostgresBlueprintPersistence implemmenta la inertfaz.
     "data": { "author": "john", "name": "house", "points": [...] }
   }
   ```
+
+Se creo un record genérico que proporciona una estructura para todas las respuestas de la API, con esto se mejora la claridad y control de errores.
+
+![alt text](img/respuestaSwagger.png)
 
 ### 4. OpenAPI / Swagger
 - Configura `springdoc-openapi` en el proyecto.  
