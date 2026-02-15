@@ -102,8 +102,16 @@ Se creo un record genérico que proporciona una estructura para todas las respue
 
 ### 4. OpenAPI / Swagger
 - Configura `springdoc-openapi` en el proyecto.  
+
+Como la dependencia y configuracion ya esta realizada al ejecutar (local) el proyecto podems der la documentacion de api el en  `http://localhost:8080/v3/api-docs`
+
 - Expón documentación automática en `/swagger-ui.html`.  
+
+Podemso verla documentacion swagger en : `http://localhost:8080/swagger-ui/index.html`
+
 - Anota endpoints con `@Operation` y `@ApiResponse`.
+
+En el swagger se puede ver toda la cocumentacion de cada endpoint.
 
 ### 5. Filtros de *Blueprints*
 - Implementa filtros:
