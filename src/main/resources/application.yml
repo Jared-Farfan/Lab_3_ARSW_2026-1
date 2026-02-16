@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/blueprints
+    username: blueprints_user
+    password: blueprints_pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

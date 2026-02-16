@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: blueprints-postgres
+    container_name: lab3-blueprints-postgres
     environment:
       POSTGRES_DB: blueprints
       POSTGRES_USER: blueprints_user
@@ -12,6 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U blueprints_user -d blueprints"]
       interval: 10s
