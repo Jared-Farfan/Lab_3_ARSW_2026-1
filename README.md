@@ -57,9 +57,13 @@ src/main/java/edu/eci/arsw/blueprints
 ### 2. Migración a persistencia en PostgreSQL
 - Configura una base de datos PostgreSQL (puedes usar Docker).
 
-Configuramos un docker-conpose para levantar una base de datos postgresql con el comando `docker-compose up -d`.
+Configuramos un docker-conpose para levantar una base de datos postgresql con el comando `docker-compose up -d`, para la creacion de la DB y sus datos iniciales desde el archivo .sql.
 
-![alt text](img/dockerDB.png)
+![alt text](img/docker-compose.png)
+
+Tambien el uso de un appliation.yml q nos ayuda con la conexion a esta.
+
+![alt text](img/application.png)
 
 - Implementa un nuevo repositorio `PostgresBlueprintPersistence` que reemplace la versión en memoria.  
 
@@ -99,11 +103,14 @@ El controlador ya usa la mayoría de los códigos correctos, pero se cambio el F
 Se creo un record genérico que proporciona una estructura para todas las respuestas de la API, con esto se mejora la claridad y control de errores.
 
 ![alt text](img/respuestaSwagger.png)
+![alt text](img/respuestas.png)
 
 ### 4. OpenAPI / Swagger
 - Configura `springdoc-openapi` en el proyecto.  
 
 Como la dependencia y configuracion ya esta realizada al ejecutar (local) el proyecto podems der la documentacion de api el en  `http://localhost:8080/v3/api-docs`
+
+![alt text](img/openapi.png)
 
 - Expón documentación automática en `/swagger-ui.html`.  
 
@@ -113,11 +120,30 @@ Podemso verla documentacion swagger en : `http://localhost:8080/swagger-ui/index
 
 En el swagger se puede ver toda la cocumentacion de cada endpoint.
 
+ejemplo de implementacion:
+
+![alt text](img/OperationyApiResponse.png)
+
 ### 5. Filtros de *Blueprints*
 - Implementa filtros:
   - **RedundancyFilter**: elimina puntos duplicados consecutivos.  
   - **UndersamplingFilter**: conserva 1 de cada 2 puntos.  
 - Activa los filtros mediante perfiles de Spring (`redundancy`, `undersampling`).  
+
+aplicamos los filtros y perfiles
+
+![alt text](img/filtros.png)
+
+Los perfiles nos perimiten ejecutar el eligiendo q filtro usar desde el rincipio, lo que nos ayuda con la separacin de configuraciones, ademas de q se respeta el principio solid Open/Closed. 
+
+RedundancyFilter
+`mvn spring-boot:run -Dspring-boot.run.profiles=redundancy`
+
+UndersamplingFilter  
+`mvn spring-boot:run -Dspring-boot.run.profiles=undersampling`
+
+Sin filtro (IdentityFilter)
+`mvn spring-boot:run`
 
 ---
 
