@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.eci.arsw.blueprints.dto.ApiResponse;
+import edu.eci.arsw.blueprints.dto.ApiResponsEscheme;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
@@ -52,12 +52,12 @@ public class BlueprintsAPIController {
         @io.swagger.v3.oas.annotations.responses.ApiResponse(
                 responseCode = "200",
                 description = "Blueprints recuperados exitosamente",
-                content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
         )
         })
         @GetMapping
-        public ResponseEntity<ApiResponse<Set<Blueprint>>> getAll() {
-                return ResponseEntity.ok(ApiResponse.ok("Blueprints obtenidos exitosamente", services.getAllBlueprints()));
+        public ResponseEntity<ApiResponsEscheme<Set<Blueprint>>> getAll() {
+                return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprints obtenidos exitosamente", services.getAllBlueprints()));
         }
 
         /**
@@ -73,22 +73,22 @@ public class BlueprintsAPIController {
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "200",
                         description = "Blueprints del autor recuperados exitosamente",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 ),
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "404",
                         description = "Autor no encontrado o sin blueprints",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 )
         })
         @GetMapping("/{author}")
-        public ResponseEntity<ApiResponse<?>> byAuthor(
+        public ResponseEntity<ApiResponsEscheme<?>> byAuthor(
                 @Parameter(description = "Nombre del autor del blueprint", required = true)
                 @PathVariable String author) {
                 try {
-                        return ResponseEntity.ok(ApiResponse.ok("Blueprints del autor obtenidos", services.getBlueprintsByAuthor(author)));
+                        return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprints del autor obtenidos", services.getBlueprintsByAuthor(author)));
                 } catch (BlueprintNotFoundException e) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.notFound(e.getMessage()));
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponsEscheme.notFound(e.getMessage()));
                 }
         }
 
@@ -106,24 +106,24 @@ public class BlueprintsAPIController {
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "200",
                         description = "Blueprint recuperado exitosamente",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 ),
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "404",
                         description = "Blueprint no encontrado",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 )
         })
         @GetMapping("/{author}/{bpname}")
-        public ResponseEntity<ApiResponse<?>> byAuthorAndName(
+        public ResponseEntity<ApiResponsEscheme<?>> byAuthorAndName(
                 @Parameter(description = "Nombre del autor del blueprint", required = true)
                 @PathVariable String author,
                 @Parameter(description = "Nombre del blueprint", required = true)
                 @PathVariable String bpname) {
                 try {
-                        return ResponseEntity.ok(ApiResponse.ok("Blueprint obtenido exitosamente", services.getBlueprint(author, bpname)));
+                        return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprint obtenido exitosamente", services.getBlueprint(author, bpname)));
                 } catch (BlueprintNotFoundException e) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.notFound(e.getMessage()));
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponsEscheme.notFound(e.getMessage()));
                 }
         }
 
@@ -140,16 +140,16 @@ public class BlueprintsAPIController {
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "201",
                         description = "Blueprint creado exitosamente",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 ),
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "400",
                         description = "Solicitud inválida o blueprint ya existe",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 )
         })
         @PostMapping
-        public ResponseEntity<ApiResponse<?>> add(
+        public ResponseEntity<ApiResponsEscheme<?>> add(
                 @io.swagger.v3.oas.annotations.parameters.RequestBody(
                         description = "Datos del nuevo blueprint",
                         required = true,
@@ -159,9 +159,9 @@ public class BlueprintsAPIController {
                 try {
                         Blueprint bp = new Blueprint(req.author(), req.name(), req.points());
                         services.addNewBlueprint(bp);
-                        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.created("Blueprint creado exitosamente", bp));
+                        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponsEscheme.created("Blueprint creado exitosamente", bp));
                 } catch (BlueprintPersistenceException e) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.badRequest(e.getMessage()));
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponsEscheme.badRequest(e.getMessage()));
                 }
         }
 
@@ -180,21 +180,21 @@ public class BlueprintsAPIController {
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "202",
                         description = "Punto agregado exitosamente",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 ),
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "400",
                         description = "Datos del punto inválidos",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 ),
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "404",
                         description = "Blueprint no encontrado",
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class))
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 )
         })
         @PutMapping("/{author}/{bpname}/points")
-        public ResponseEntity<ApiResponse<?>> addPoint(
+        public ResponseEntity<ApiResponsEscheme<?>> addPoint(
                 @Parameter(description = "Nombre del autor del blueprint", required = true)
                 @PathVariable String author,
                 @Parameter(description = "Nombre del blueprint", required = true)
@@ -207,9 +207,9 @@ public class BlueprintsAPIController {
                 @RequestBody Point p) {
                 try {
                         services.addPoint(author, bpname, p.getX(), p.getY());
-                        return ResponseEntity.status(HttpStatus.ACCEPTED).body(ApiResponse.accepted("Punto agregado exitosamente", p));
+                        return ResponseEntity.status(HttpStatus.ACCEPTED).body(ApiResponsEscheme.accepted("Punto agregado exitosamente", p));
                 } catch (BlueprintNotFoundException e) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.notFound(e.getMessage()));
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponsEscheme.notFound(e.getMessage()));
                 }
         }
 

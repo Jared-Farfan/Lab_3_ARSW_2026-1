@@ -67,11 +67,14 @@ Tambien el uso de un appliation.yml q nos ayuda con la conexion a esta.
 
 - Implementa un nuevo repositorio `PostgresBlueprintPersistence` que reemplace la versión en memoria.  
 
-Se crearon las clases JpaBlueprintRepository y PostgresBlueprintPersistence para la presistencia con postgresql.
+Se crearon las clases JpaBlueprintRepository y PostgresBlueprintPersistence para la presistencia con postgresql. Ademas se
+dejo la configuracion de `spring.jpa.show-sql=true` para mostar en consolo la version sql de las consultas.
+
+![alt text](img/consultas.png)
 
 - Mantén el contrato de la interfaz `BlueprintPersistence`.  
 
-la clase PostgresBlueprintPersistence implemmenta la inertfaz.
+la clase PostgresBlueprintPersistence implemmenta la inertfaz manteniendo el contrato ayudandose del repositorio JpaBlueprintRepository para las colsultas a realizar.
 
 ### 3. Buenas prácticas de API REST
 - Cambia el path base de los controladores a `/api/v1/blueprints`.  
@@ -137,13 +140,21 @@ aplicamos los filtros y perfiles
 Los perfiles nos perimiten ejecutar el eligiendo q filtro usar desde el rincipio, lo que nos ayuda con la separacin de configuraciones, ademas de q se respeta el principio solid Open/Closed. 
 
 RedundancyFilter
+
 `mvn spring-boot:run -Dspring-boot.run.profiles=redundancy`
 
 UndersamplingFilter  
+
 `mvn spring-boot:run -Dspring-boot.run.profiles=undersampling`
 
 Sin filtro (IdentityFilter)
+
 `mvn spring-boot:run`
+
+---
+
+Tambien se hicieron unas cuantas prubas unitarias, usar `mvn test -Dtest=BlueprintsUnitTests` para su ejecucion.
+
 
 ---
 

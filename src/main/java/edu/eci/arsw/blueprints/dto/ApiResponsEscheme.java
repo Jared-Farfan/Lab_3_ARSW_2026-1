@@ -14,8 +14,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @param data Datos de la respuesta (puede ser null en caso de error o respuestas sin contenido)
  */
 @Schema(description = "Respuesta uniforme de la API")
-public record ApiResponse<T>(
-    @Schema(description = "Código HTTP de la respuesta", example = "200")
+public record ApiResponsEscheme<T>(
+    @Schema(description = "Código HTTP de la respuesta", example = "200", allowableValues = {"200", "201", "202", "400", "404", "500"})
     int code,
     
     @Schema(description = "Mensaje descriptivo del resultado", example = "Operación exitosa")
@@ -27,63 +27,63 @@ public record ApiResponse<T>(
     /**
      * Crea una respuesta exitosa con código 200.
      */
-    public static <T> ApiResponse<T> ok(T data) {
-        return new ApiResponse<>(200, "Operación exitosa", data);
+    public static <T> ApiResponsEscheme<T> ok(T data) {
+        return new ApiResponsEscheme<>(200, "Operación exitosa", data);
     }
 
     /**
      * Crea una respuesta exitosa con código 200 y mensaje personalizado.
      */
-    public static <T> ApiResponse<T> ok(String message, T data) {
-        return new ApiResponse<>(200, message, data);
+    public static <T> ApiResponsEscheme<T> ok(String message, T data) {
+        return new ApiResponsEscheme<>(200, message, data);
     }
 
     /**
      * Crea una respuesta de recurso creado con código 201.
      */
-    public static <T> ApiResponse<T> created(T data) {
-        return new ApiResponse<>(201, "Recurso creado exitosamente", data);
+    public static <T> ApiResponsEscheme<T> created(T data) {
+        return new ApiResponsEscheme<>(201, "Recurso creado exitosamente", data);
     }
 
     /**
      * Crea una respuesta de recurso creado con código 201 y mensaje personalizado.
      */
-    public static <T> ApiResponse<T> created(String message, T data) {
-        return new ApiResponse<>(201, message, data);
+    public static <T> ApiResponsEscheme<T> created(String message, T data) {
+        return new ApiResponsEscheme<>(201, message, data);
     }
 
     /**
      * Crea una respuesta de actualización aceptada con código 202.
      */
-    public static <T> ApiResponse<T> accepted(T data) {
-        return new ApiResponse<>(202, "Actualización aceptada", data);
+    public static <T> ApiResponsEscheme<T> accepted(T data) {
+        return new ApiResponsEscheme<>(202, "Actualización aceptada", data);
     }
 
     /**
      * Crea una respuesta de actualización aceptada con código 202 y mensaje personalizado.
      */
-    public static <T> ApiResponse<T> accepted(String message, T data) {
-        return new ApiResponse<>(202, message, data);
+    public static <T> ApiResponsEscheme<T> accepted(String message, T data) {
+        return new ApiResponsEscheme<>(202, message, data);
     }
 
     /**
      * Crea una respuesta de error de solicitud inválida con código 400.
      */
-    public static <T> ApiResponse<T> badRequest(String message) {
-        return new ApiResponse<>(400, message, null);
+    public static <T> ApiResponsEscheme<T> badRequest(String message) {
+        return new ApiResponsEscheme<>(400, message, null);
     }
 
     /**
      * Crea una respuesta de recurso no encontrado con código 404.
      */
-    public static <T> ApiResponse<T> notFound(String message) {
-        return new ApiResponse<>(404, message, null);
+    public static <T> ApiResponsEscheme<T> notFound(String message) {
+        return new ApiResponsEscheme<>(404, message, null);
     }
 
     /**
      * Crea una respuesta de error interno con código 500.
      */
-    public static <T> ApiResponse<T> error(String message) {
-        return new ApiResponse<>(500, message, null);
+    public static <T> ApiResponsEscheme<T> error(String message) {
+        return new ApiResponsEscheme<>(500, message, null);
     }
 }
