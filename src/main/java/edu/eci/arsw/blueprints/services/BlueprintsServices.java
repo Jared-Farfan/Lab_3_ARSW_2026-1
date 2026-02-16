@@ -1,13 +1,15 @@
 package edu.eci.arsw.blueprints.services;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import edu.eci.arsw.blueprints.filters.BlueprintsFilter;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistence;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
-import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 public class BlueprintsServices {
@@ -25,11 +27,15 @@ public class BlueprintsServices {
     }
 
     public Set<Blueprint> getAllBlueprints() {
-        return persistence.getAllBlueprints();
+        return persistence.getAllBlueprints().stream()
+            .map(filter::apply)
+            .collect(Collectors.toSet());
     }
 
     public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
-        return persistence.getBlueprintsByAuthor(author);
+        return persistence.getBlueprintsByAuthor(author).stream()
+            .map(filter::apply)
+            .collect(Collectors.toSet());
     }
 
     public Blueprint getBlueprint(String author, String name) throws BlueprintNotFoundException {
