@@ -57,7 +57,7 @@ public class BlueprintsAPIController {
                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
         )
         })
-        @GetMapping
+        @GetMapping("/All")
         public ResponseEntity<ApiResponsEscheme<Set<Blueprint>>> getAll() {
                 return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprints obtenidos exitosamente", services.getAllBlueprints()));
         }
