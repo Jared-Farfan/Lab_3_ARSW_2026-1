@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -208,6 +209,42 @@ public class BlueprintsAPIController {
                 try {
                         services.addPoint(author, bpname, p.getX(), p.getY());
                         return ResponseEntity.status(HttpStatus.ACCEPTED).body(ApiResponsEscheme.accepted("Punto agregado exitosamente", p));
+                } catch (BlueprintNotFoundException e) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponsEscheme.notFound(e.getMessage()));
+                }
+        }
+
+        /**
+         * Elimina un blueprint específico por autor y nombre.
+         * @param author Nombre del autor
+         * @param bpname Nombre del blueprint
+         * @return ApiResponse con código 200 si se elimina exitosamente
+         */
+        @Operation(
+                summary = "Eliminar un blueprint",
+                description = "Elimina un blueprint específico identificado por su autor y nombre"
+        )
+        @ApiResponses(value = {
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "200",
+                        description = "Blueprint eliminado exitosamente",
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
+                ),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "404",
+                        description = "Blueprint no encontrado",
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
+                )
+        })
+        @DeleteMapping("/{author}/{bpname}")
+        public ResponseEntity<ApiResponsEscheme<?>> delete(
+                @Parameter(description = "Nombre del autor del blueprint", required = true)
+                @PathVariable String author,
+                @Parameter(description = "Nombre del blueprint", required = true)
+                @PathVariable String bpname) {
+                try {
+                        services.deleteBlueprint(author, bpname);
+                        return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprint eliminado exitosamente", null));
                 } catch (BlueprintNotFoundException e) {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponsEscheme.notFound(e.getMessage()));
                 }
