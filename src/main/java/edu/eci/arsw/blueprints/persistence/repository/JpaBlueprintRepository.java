@@ -16,4 +16,6 @@ public interface JpaBlueprintRepository extends JpaRepository<Blueprint, Long> {
     List<Blueprint> findByAuthor(String author);
 
     boolean existsByAuthorAndName(String author, String name);
+
+    void deleteByAuthorAndName(String author, String name);
 }

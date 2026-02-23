@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.eci.arsw.blueprints.dto.ApiResponsEscheme;
@@ -82,10 +83,10 @@ public class BlueprintsAPIController {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponsEscheme.class))
                 )
         })
-        @GetMapping("/{author}")
+        @GetMapping(params = "author")
         public ResponseEntity<ApiResponsEscheme<?>> byAuthor(
                 @Parameter(description = "Nombre del autor del blueprint", required = true)
-                @PathVariable String author) {
+                @RequestParam String author) {
                 try {
                         return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprints del autor obtenidos", services.getBlueprintsByAuthor(author)));
                 } catch (BlueprintNotFoundException e) {

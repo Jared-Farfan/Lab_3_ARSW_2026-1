@@ -1,11 +1,14 @@
 package edu.eci.arsw.blueprints.persistence;
 
-import edu.eci.arsw.blueprints.model.Blueprint;
-import edu.eci.arsw.blueprints.model.Point;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import edu.eci.arsw.blueprints.model.Blueprint;
+import edu.eci.arsw.blueprints.model.Point;
 
 /**
  * In-memory implementation of BlueprintPersistence.
@@ -64,5 +67,14 @@ public class InMemoryBlueprintPersistence implements BlueprintPersistence {
     public void addPoint(String author, String name, int x, int y) throws BlueprintNotFoundException {
         Blueprint bp = getBlueprint(author, name);
         bp.addPoint(new Point(x, y));
+    }
+
+    @Override
+    public void deleteBlueprint(String author, String name) throws BlueprintNotFoundException {
+        String key = keyOf(author, name);
+        if (!blueprints.containsKey(key)) {
+            throw new BlueprintNotFoundException("Blueprint not found: %s/%s".formatted(author, name));
+        }
+        blueprints.remove(key);
     }
 }
