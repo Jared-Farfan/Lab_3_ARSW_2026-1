@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.eci.arsw.blueprints.dto.ApiResponsEscheme;
+import edu.eci.arsw.blueprints.dto.BlueprintsbyAuthor;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
@@ -88,7 +89,9 @@ public class BlueprintsAPIController {
                 @Parameter(description = "Nombre del autor del blueprint", required = true)
                 @RequestParam String author) {
                 try {
-                        return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprints del autor obtenidos", services.getBlueprintsByAuthor(author)));
+                        Set<Blueprint> blueprints = services.getBlueprintsByAuthor(author);
+                        BlueprintsbyAuthor response = BlueprintsbyAuthor.of(author, blueprints);
+                        return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprints del autor obtenidos", response));
                 } catch (BlueprintNotFoundException e) {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponsEscheme.notFound(e.getMessage()));
                 }
