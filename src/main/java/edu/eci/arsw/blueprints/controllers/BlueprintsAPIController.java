@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.eci.arsw.blueprints.dto.ApiResponsEscheme;
+import edu.eci.arsw.blueprints.dto.BlueprintEvent;
 import edu.eci.arsw.blueprints.dto.BlueprintsbyAuthor;
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
@@ -40,8 +42,25 @@ import jakarta.validation.constraints.NotBlank;
 public class BlueprintsAPIController {
 
         private final BlueprintsServices services;
+        // Template para enviar notificaciones WebSocket cuando se hacen cambios via REST
+        private final SimpMessagingTemplate messagingTemplate;
 
-        public BlueprintsAPIController(BlueprintsServices services) { this.services = services; }
+        public BlueprintsAPIController(BlueprintsServices services, SimpMessagingTemplate messagingTemplate) { 
+                this.services = services; 
+                this.messagingTemplate = messagingTemplate;
+        }
+        
+        /**
+         * Envía un evento a todos los clientes WebSocket suscritos.
+         * Esto permite que los clientes en tiempo real reciban actualizaciones
+         * cuando alguien hace cambios via la API REST.
+         */
+        private void broadcastEvent(BlueprintEvent event) {
+                messagingTemplate.convertAndSend("/topic/blueprints", event);
+                if (event.author() != null) {
+                        messagingTemplate.convertAndSend("/topic/blueprints/" + event.author(), event);
+                }
+        }
 
         /**
          * Obtiene todos los blueprints del sistema.
@@ -164,6 +183,10 @@ public class BlueprintsAPIController {
                 try {
                         Blueprint bp = new Blueprint(req.author(), req.name(), req.points());
                         services.addNewBlueprint(bp);
+                        
+                        // Notifica a clientes WebSocket sobre el nuevo blueprint
+                        broadcastEvent(BlueprintEvent.created(bp));
+                        
                         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponsEscheme.created("Blueprint creado exitosamente", bp));
                 } catch (BlueprintPersistenceException e) {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponsEscheme.badRequest(e.getMessage()));
@@ -212,6 +235,11 @@ public class BlueprintsAPIController {
                 @RequestBody Point p) {
                 try {
                         services.addPoint(author, bpname, p.getX(), p.getY());
+                        
+                        // Notifica a clientes WebSocket sobre la actualización
+                        Blueprint bp = services.getBlueprint(author, bpname);
+                        broadcastEvent(BlueprintEvent.updated(bp, "Punto agregado: (%d, %d)".formatted(p.getX(), p.getY())));
+                        
                         return ResponseEntity.status(HttpStatus.ACCEPTED).body(ApiResponsEscheme.accepted("Punto agregado exitosamente", p));
                 } catch (BlueprintNotFoundException e) {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponsEscheme.notFound(e.getMessage()));
@@ -248,6 +276,10 @@ public class BlueprintsAPIController {
                 @PathVariable String bpname) {
                 try {
                         services.deleteBlueprint(author, bpname);
+                        
+                        // Notifica a clientes WebSocket sobre la eliminación
+                        broadcastEvent(BlueprintEvent.deleted(author, bpname));
+                        
                         return ResponseEntity.ok(ApiResponsEscheme.ok("Blueprint eliminado exitosamente", null));
                 } catch (BlueprintNotFoundException e) {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponsEscheme.notFound(e.getMessage()));
