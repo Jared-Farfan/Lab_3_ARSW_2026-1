@@ -83,38 +83,6 @@ public class BlueprintWebSocketController {
     }
 
     /**
-     * Agrega un punto a un blueprint via WebSocket.
-     * @param author Autor del blueprint
-     * @param name Nombre del blueprint
-     * @param point Punto a agregar
-     * @return Evento de actualización
-     */
-    @MessageMapping("/blueprints/{author}/{name}/point")
-    @SendTo("/topic/blueprints")
-    public BlueprintEvent addPoint(
-            @DestinationVariable String author,  // Extrae {author} del path
-            @DestinationVariable String name,    // Extrae {name} del path
-            Point point) {
-        try {
-            services.addPoint(author, name, point.getX(), point.getY());
-            Blueprint bp = services.getBlueprint(author, name);
-            
-            BlueprintEvent event = BlueprintEvent.updated(bp, "Punto agregado: (%d, %d)".formatted(point.getX(), point.getY()));
-            notifyAuthorTopic(author, event);
-            
-            return event;
-        } catch (BlueprintNotFoundException e) {
-            return new BlueprintEvent(
-                BlueprintEvent.EventType.UPDATED,
-                null,
-                author,
-                name,
-                "Error: " + e.getMessage()
-            );
-        }
-    }
-
-    /**
      * Elimina un blueprint via WebSocket.
      * @param author Autor del blueprint
      * @param name Nombre del blueprint

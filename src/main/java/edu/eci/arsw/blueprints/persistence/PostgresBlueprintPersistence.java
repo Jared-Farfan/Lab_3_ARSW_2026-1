@@ -4,16 +4,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.repository.JpaBlueprintRepository;
 
-@Repository
-@Primary
+
 public class PostgresBlueprintPersistence implements BlueprintPersistence {
 
     private final JpaBlueprintRepository repository;

@@ -7,6 +7,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
 
@@ -15,6 +18,8 @@ import edu.eci.arsw.blueprints.model.Point;
  * Not active by default - use PostgresBlueprintPersistence instead.
  * To use this implementation, annotate it with @Repository and remove @Primary from PostgresBlueprintPersistence.
  */
+@Repository
+@Primary
 public class InMemoryBlueprintPersistence implements BlueprintPersistence {
 
     private final Map<String, Blueprint> blueprints = new ConcurrentHashMap<>();
